@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ifucolo.goalbygoal.ui.theme.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -144,27 +145,20 @@ fun SoccerScreen() {
 
 fun MainParts(drawScope: DrawScope) {
     drawScope.apply {
-        val borderPath = Path()
 
-//        borderPath.apply {
-//            // border
-//            //horizontal lines
-//            lineTo(size.width, 0f)
-//            lineTo(size.width, size.height)
-//            //vertical lines
-//            lineTo(0f, size.height)
-//            lineTo(0f, 0f)
-//        }
-//
-//        //Rectangle around
-//        drawPath(
-//            path = borderPath,
-//            color = Color.White,
-//            style = Stroke(
-//                width = 15.dp.toPx(),
-//            )
-//        )
+        drawLine(
+            color = Color.White,
+            start = Offset(x = 0f , y = 180f),
+            end = Offset(x = 0f , y = size.height - 180f ),
+            strokeWidth = 12.dp.toPx()
+        )
 
+        drawLine(
+            color = Color.White,
+            start = Offset(x = size.width , y = 180f),
+            end = Offset(x = size.width, y = size.height - 180f ),
+            strokeWidth = 12.dp.toPx()
+        )
         //Middle line
         drawLine(
             color = Color.White,
@@ -194,235 +188,218 @@ fun MainParts(drawScope: DrawScope) {
 
 fun TopArea(drawScope: DrawScope) {
     drawScope.apply {
-
-        val topYPosStart = 180f
-        val topYPosEnd = size.height/5//7
-
-        val topYSmallPosStart = 180f
-        val topSmallYPosEnd = size.height/7//16
-
-        var yLimitLine = 0f
-
-        //goals lines
-        while (yLimitLine < topYSmallPosStart) {
-            //line goal
-            drawLine(
-                color = Color.White,
-                start = Offset(x = size.width/3, y = yLimitLine),
-                end = Offset(x = size.width - size.width/3, y = yLimitLine),
-                strokeWidth = 2.dp.toPx()
-            )
-
-            yLimitLine+= 20f
-        }
-
-        var xLimitLine = size.width/3
-        val xSmallPosEnd = size.width - size.width/3
-        while (xLimitLine <= xSmallPosEnd) {
-            //line goal
-            drawLine(
-                color = Color.White,
-                start = Offset(x = xLimitLine, y = 0f),
-                end = Offset(x = xLimitLine, y = topYSmallPosStart),
-                strokeWidth = 6.dp.toPx()
-            )
-
-            xLimitLine+= 20f
-        }
-
-        //Line between goal and field
-        drawLine(
-            color = Color.White,
-            start = Offset(x = 0f , y = topYSmallPosStart),
-            end = Offset(x = size.width , y = topYSmallPosStart),
-            strokeWidth = 6.dp.toPx()
+        val smallArea = SmallArea(
+            xStart = size.width/3,
+            xEnd = size.width - size.width/3,
+            yStart = 180f,
+            yEnd = size.height/7,
+            yHorizontal = size.height/7
         )
 
-        //Big area
-        //Top horiontal Area line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/6, y = topYPosEnd),
-            end = Offset(x = size.width - size.width/6, y = topYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        val bigArea = BigArea(
+            xStart = size.width/6,
+            xEnd = size.width - size.width/6,
+            yStart = 180f,
+            yEnd = size.height/5,
+            yHorizontal = size.height/5,
+            yFieldLine = 180f
         )
 
-        //left vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/6, y = topYPosStart),
-            end = Offset(x = size.width/6, y = topYPosEnd ),
-            strokeWidth = 6.dp.toPx()
+        val goal = Goal(
+            xStart = size.width/3,
+            xEnd = size.width - size.width/3,
+            yStart = 0f,
+            yEnd = 180f
         )
 
-        //right vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width - size.width/6, y = topYPosStart),
-            end = Offset(x = size.width - size.width/6, y = topYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        val penaltyMark = PenaltyMark(
+            x = size.width/2,
+            y = (size.height/6.5).toFloat()
         )
 
-        //Small area
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/3, y = topSmallYPosEnd),
-            end = Offset(x = size.width - size.width/3 , y = topSmallYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        val fieldArea = FieldArea(
+            smallArea = smallArea,
+            bigArea = bigArea,
+            goal = goal,
+            penaltyMark = penaltyMark,
+            size = size
         )
 
-        //left vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/3, y = topYSmallPosStart),
-            end = Offset(x = size.width/3, y = topSmallYPosEnd),
-            strokeWidth = 6.dp.toPx()
-        )
-
-        //right vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width - size.width/3, y = topYSmallPosStart),
-            end = Offset(x = size.width - size.width/3, y = topSmallYPosEnd),
-            strokeWidth = 6.dp.toPx()
-        )
-
-        //semi circle
-
-//        drawArc(
-//            brush = SolidColor(Color.White),
-//            size = Size(360f, 180f),
-//            startAngle = 0f,
-//            sweepAngle = 180f,
-//            useCenter = true,
-//            style = Stroke(12f, cap = StrokeCap.Round),
-//            topLeft = Offset(x = (size.width/3).toFloat()  , y = (size.height/9.5).toFloat())
-//        )
-
-        //penalty mark
-        drawCircle(
-            color = Color.White,
-            center = Offset(x = (size.width/2).toFloat()  , y = (size.height/6.5).toFloat()),
-            radius = 10f
+        drawArea(
+            drawScope = this,
+            fieldArea = fieldArea
         )
     }
 }
 
 fun BottomArea(drawScope: DrawScope) {
     drawScope.apply {
-        val topYPosStart = size.height- size.height /5//7
-        val topYPosEnd = size.height - 180f//height
-
-        val topYSmallPosStart = size.height- size.height /7//17
-        val topSmallYPosEnd = size.height - 180f//height
-
-
-
-        var yLimitLine = topSmallYPosEnd
-
-        //goals lines
-        while (yLimitLine < size.height) {
-            //line goal
-            drawLine(
-                color = Color.White,
-                start = Offset(x = size.width/3, y = yLimitLine),
-                end = Offset(x = size.width - size.width/3, y = yLimitLine),
-                strokeWidth = 2.dp.toPx()
-            )
-
-            yLimitLine+= 20f
-        }
-
-        var xLimitLine = size.width/3
-        val xSmallPosEnd = size.width - size.width/3
-        while (xLimitLine <= xSmallPosEnd) {
-            //line goal
-            drawLine(
-                color = Color.White,
-                start = Offset(x = xLimitLine, y = topSmallYPosEnd),
-                end = Offset(x = xLimitLine, y = size.height),
-                strokeWidth = 6.dp.toPx()
-            )
-
-            xLimitLine+= 20f
-        }
-
-        //Line between goal and field
-        drawLine(
-            color = Color.White,
-            start = Offset(x = 0f , y = topSmallYPosEnd),
-            end = Offset(x = size.width , y = topSmallYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        val smallArea = SmallArea(
+            xStart = size.width/3,
+            xEnd = size.width - size.width/3,
+            yStart = size.height - size.height/7,
+            yEnd = size.height -180f,
+            yHorizontal = size.height- size.height/7
         )
 
-        //Top horizontal Area line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/6, y = topYPosStart),
-            end = Offset(x = size.width - size.width/6, y = topYPosStart),
-            strokeWidth = 6.dp.toPx()
+        val bigArea = BigArea(
+            xStart = size.width/6,
+            xEnd = size.width - size.width/6,
+            yStart = size.height- size.height/5,
+            yEnd = size.height - 180f,
+            yHorizontal = size.height- size.height/5,
+            yFieldLine = size.height - 180f
         )
 
-        //left vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/6, y = topYPosStart),
-            end = Offset(x = size.width/6, y = topYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        val goal = Goal(
+            xStart = size.width/3,
+            xEnd = size.width - size.width/3,
+            yStart = size.height - 180f,
+            yEnd = size.height,
         )
 
-        //right vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width - size.width/6, y = topYPosStart),
-            end = Offset(x = size.width - size.width/6, y = topYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        val penaltyMark = PenaltyMark(
+            x = size.width/2,
+            y = size.height- (size.height/6).toFloat()
         )
 
-        //Small area
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/3, y = topYSmallPosStart),
-            end = Offset(x = size.width - size.width/3, y = topYSmallPosStart),
-            strokeWidth = 6.dp.toPx()
+        val fieldArea = FieldArea(
+            smallArea = smallArea,
+            bigArea = bigArea,
+            goal = goal,
+            penaltyMark = penaltyMark,
+            size = size
         )
 
-        //left vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width/3, y = topYSmallPosStart),
-            end = Offset(x = size.width/3, y = topSmallYPosEnd),
-            strokeWidth = 6.dp.toPx()
+        drawArea(
+            drawScope = this,
+            fieldArea = fieldArea
         )
-
-        //right vertical line
-        drawLine(
-            color = Color.White,
-            start = Offset(x = size.width - size.width/3, y = topYSmallPosStart),
-            end = Offset(x = size.width - size.width/3, y = topSmallYPosEnd),
-            strokeWidth = 6.dp.toPx()
-        )
-
-        //semi circle
-//        drawArc(
-//            brush = SolidColor(Color.White),
-//            size = Size(360f, 180f),
-//            startAngle = 180f,
-//            sweepAngle = 180f,
-//            useCenter = true,
-//            style = Stroke(12f, cap = StrokeCap.Round),
-//            topLeft = Offset(x = (size.width/3).toFloat(), y = size.height- (size.height/5.5).toFloat())
-//        )
-
-        //penalty mark
-        drawCircle(
-            color = Color.White,
-            center = Offset(x = (size.width/2).toFloat(), y = size.height- (size.height/6).toFloat()),
-            radius = 10f
-        )
-
     }
 }
+
+fun drawArea(
+    drawScope: DrawScope,
+    fieldArea: FieldArea
+) = drawScope.apply {
+    drawGoal(
+        drawScope = this,
+        goal = fieldArea.goal
+    )
+
+    drawBigPenaltyArea(
+        drawScope = this,
+        bigArea = fieldArea.bigArea
+    )
+
+    drawSmallArea(
+        drawScope = this,
+        smallArea = fieldArea.smallArea
+    )
+
+    drawCircle(
+        color = Color.White,
+        center = Offset(x = fieldArea.penaltyMark.x  , y = fieldArea.penaltyMark.y),
+        radius = 10f
+    )
+}
+
+fun drawSmallArea(
+    drawScope: DrawScope,
+    smallArea: SmallArea
+) = drawScope.apply {
+
+    //left vertical line
+    drawLine(
+        color = Color.White,
+        start = Offset(x = smallArea.xStart, y = smallArea.yStart),
+        end = Offset(x = smallArea.xStart, y = smallArea.yEnd),
+        strokeWidth = 6.dp.toPx()
+    )
+
+    //right vertical line
+    drawLine(
+        color = Color.White,
+        start = Offset(x = smallArea.xEnd, y = smallArea.yStart),
+        end = Offset(x = smallArea.xEnd, y = smallArea.yEnd),
+        strokeWidth = 6.dp.toPx()
+    )
+
+    //horizontal line
+    drawLine(
+        color = Color.White,
+        start = Offset(x = smallArea.xStart, y = smallArea.yHorizontal),
+        end = Offset(x = smallArea.xEnd, y = smallArea.yHorizontal),
+        strokeWidth = 6.dp.toPx()
+    )
+}
+fun drawBigPenaltyArea(
+    drawScope: DrawScope,
+    bigArea: BigArea
+) = drawScope.apply {
+    //Line between goal and field
+    drawLine(
+        color = Color.White,
+        start = Offset(x = 0f , y = bigArea.yFieldLine),
+        end = Offset(x = size.width , y = bigArea.yFieldLine),
+        strokeWidth = 6.dp.toPx()
+    )
+    drawLine(
+        color = Color.White,
+        start = Offset(x = bigArea.xStart, y = bigArea.yStart),
+        end = Offset(x = bigArea.xStart, y = bigArea.yEnd),
+        strokeWidth = 6.dp.toPx()
+    )
+
+    //right vertical line
+    drawLine(
+        color = Color.White,
+        start = Offset(x = bigArea.xEnd, y = bigArea.yStart),
+        end = Offset(x = bigArea.xEnd, y = bigArea.yEnd),
+        strokeWidth = 6.dp.toPx()
+    )
+
+    //horizontal line
+    drawLine(
+        color = Color.White,
+        start = Offset(x = bigArea.xStart, y = bigArea.yHorizontal),
+        end = Offset(x = bigArea.xEnd, y = bigArea.yHorizontal),
+        strokeWidth = 6.dp.toPx()
+    )
+}
+fun drawGoal(
+    drawScope: DrawScope,
+    goal: Goal
+) = drawScope.apply {
+    var yStartPosToDraw = goal.yStart
+    //horizontal lines
+    while (yStartPosToDraw < goal.yEnd) {
+        //line goal
+        drawLine(
+            color = Color.Blue,
+            start = Offset(x = goal.xStart, y = yStartPosToDraw),
+            end = Offset(x = goal.xEnd, y = yStartPosToDraw),
+            strokeWidth = 2.dp.toPx()
+        )
+
+        yStartPosToDraw+= 20f
+    }
+
+    var xLimitLine = goal.xStart
+    //vertical lines
+    while (xLimitLine <= goal.xEnd) {
+        //line goal
+        drawLine(
+            color = Color.Blue,
+            start = Offset(x = xLimitLine, y = goal.yStart),
+            end = Offset(x = xLimitLine, y = goal.yEnd),
+            strokeWidth = 2.dp.toPx()
+        )
+
+        xLimitLine+= 20f
+    }
+}
+
 
 @Preview("SoccerScreenPreview")
 @Composable
