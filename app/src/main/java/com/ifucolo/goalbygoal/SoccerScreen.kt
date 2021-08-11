@@ -321,7 +321,7 @@ fun BottomArea(drawScope: DrawScope) {
         var yLimitLine = topSmallYPosEnd
 
         //goals lines
-        while (yLimitLine < topYSmallPosStart) {
+        while (yLimitLine < size.height) {
             //line goal
             drawLine(
                 color = Color.White,
