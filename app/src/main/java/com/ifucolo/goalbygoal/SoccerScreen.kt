@@ -1,13 +1,17 @@
 package com.ifucolo.goalbygoal
 
+import android.graphics.drawable.Icon
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,8 +25,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.ifucolo.goalbygoal.ui.theme.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -105,13 +111,11 @@ fun SoccerScreen() {
         }
     }
 
-    Box(
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxSize()
     ) {
-
-
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
@@ -139,6 +143,33 @@ fun SoccerScreen() {
             )
         }
 
+        val (buttonLeft, buttonRight) = createRefs()
+
+        FloatingActionButton(
+            modifier = Modifier.constrainAs(buttonLeft) {
+                bottom.linkTo(parent.bottom)
+                this.start.linkTo(parent.start)
+            },
+            onClick = {
+
+            },
+            contentColor = Color.White
+        ) {
+            Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = "asdas")
+        }
+
+        FloatingActionButton(
+            modifier = Modifier.constrainAs(buttonRight) {
+                bottom.linkTo(parent.bottom)
+                end.linkTo(parent.end)
+            },
+            onClick = {
+
+            },
+            contentColor = Color.White
+        ) {
+            Icon(imageVector = Icons.Outlined.ArrowForward, contentDescription = "asdas")
+        }
     }
 
 }

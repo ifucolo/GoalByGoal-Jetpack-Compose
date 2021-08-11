@@ -67,7 +67,7 @@ dependencies {
     }
 
     implementation( "androidx.compose.animation:animation:${rootProject.extra["compose_version"]}")
-    implementation( "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08")
+    implementation( "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02")
     implementation("androidx.compose.foundation:foundation:${rootProject.extra["compose_version"]}")
     implementation( "androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
 
