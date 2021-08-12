@@ -2,6 +2,7 @@ package com.ifucolo.goalbygoal
 
 import android.graphics.drawable.Icon
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -12,10 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -30,86 +28,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ifucolo.goalbygoal.ui.theme.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-sealed class Side {
-    object Top: Side()
-    object Bottom: Side()
+sealed class Side(open var ySide: Float) {
+    object Top: Side(1f)
+    object Bottom: Side(-1f)
 }
-sealed class AnimationState {
-    object RUNNING: AnimationState()
-    object ENABLE: AnimationState()
-}
+
 
 @Composable
 fun SoccerScreen() {
 
-    val animatableX = remember { Animatable(initialValue = 0f) }
-    val animatableY = remember { Animatable(initialValue = 0f) }
+    val animatableX = remember { Animatable(initialValue = 500f) }
+    val animatableY = remember { Animatable(initialValue = 1900f) }
     val animationScope = rememberCoroutineScope()
-    var animationState = AnimationState.ENABLE as AnimationState
-    var start = true
 
-    var maxX = remember { 0 }
-    var maxY = remember { 0 }
-    var side: Side = Side.Top
+    var side: Side by remember { mutableStateOf(Side.Bottom) }
+    var attempts: Int by remember { mutableStateOf(3) }
 
-    var xStart = 0f
-    var xEnd = 0f
-
-    var goal = remember { 0 }
-
-    val onClick: () -> Unit = {
-        animationScope.launch {
-            // Start the animations without blocking each other
-            // On each click x and y values will be created randomly
-            start = false
-            animationState = if (animatableY.value.toInt() == 0 || animatableY.value.toInt() == maxY) {
-                AnimationState.ENABLE
-            } else {
-                AnimationState.RUNNING
-            }
-
-            if (animationState == AnimationState.ENABLE) {
-                animationState = AnimationState.RUNNING
-                launch {
-                    animatableX.animateTo(
-                        targetValue = (0..maxX)
-                            .random()
-                            .toFloat(),
-                        animationSpec = tween(durationMillis = 1000)
-                    )
-
-                    if (animatableX.value in xStart..xEnd) {
-                        goal++
-                        println("goal = $goal")
-                    }
-
-                }
-
-                launch {
-                    var randomY = 0f
-
-                    when(side) {
-                        Side.Bottom -> {
-                            randomY = 0f
-                            side = Side.Top
-                        }
-                        Side.Top -> {
-                            randomY = maxY.toFloat()
-                            side = Side.Bottom
-                        }
-                    }
-
-                    animatableY.animateTo(
-                        targetValue = randomY,
-                        animationSpec = tween(durationMillis = 1000)
-                    )
-                }
-            }
-        }
-    }
+    var sizeCanva: Size? = null
 
     ConstraintLayout(
         modifier = Modifier
@@ -121,24 +61,20 @@ fun SoccerScreen() {
                 .fillMaxWidth()
                 .fillMaxSize()
                 .background(Color.Green)
-                .clickable { onClick.invoke() },
+                //.clickable { onClick.invoke() },
         ) {
             TopArea(drawScope = this)
             BottomArea(drawScope = this)
             MainParts(drawScope = this)
 
-            xStart = size.width/3
-            xEnd = size.width - size.width/3
-
-            maxX = size.width.toInt()
-            maxY = size.height.toInt()
+            sizeCanva = size
 
             drawCircle(
                 color = Color.Black,
                 radius = 40f,
                 center = Offset(
-                    x = if (start) (size.width/2).toFloat() else animatableX.value,
-                    y = if (start) (size.height/9.5).toFloat() else animatableY.value
+                    x = animatableX.value,
+                    y = animatableY.value
                 )
             )
         }
@@ -151,7 +87,18 @@ fun SoccerScreen() {
                 this.start.linkTo(parent.start)
             },
             onClick = {
-
+                val targetX = animatableX.value - 300
+                val targetY = animatableY.value + (side.ySide * (sizeCanva!!.height/4))
+                xAnimation(
+                    animationScope,
+                    animatableX,
+                    animatableY,
+                    targetX,
+                    targetY,
+                    sizeCanva!!
+                )
+                attempts -=1
+                checkAttempts(attempts, side, onAttemptChange = { attempts = it }, onSideChange = { side = it})
             },
             contentColor = Color.White
         ) {
@@ -164,14 +111,73 @@ fun SoccerScreen() {
                 end.linkTo(parent.end)
             },
             onClick = {
-
+                val targetX = animatableX.value + 300
+                val targetY = animatableY.value + (side.ySide * (sizeCanva!!.height/4))
+                xAnimation(
+                    animationScope,
+                    animatableX,
+                    animatableY,
+                    targetX,
+                    targetY,
+                    sizeCanva!!
+                )
+                attempts -=1
+                checkAttempts(attempts, side, onAttemptChange = { attempts = it }, onSideChange = { side = it})
             },
             contentColor = Color.White
         ) {
             Icon(imageVector = Icons.Outlined.ArrowForward, contentDescription = "asdas")
         }
+
+        //start = false
+    }
+}
+
+fun xAnimation(
+    scope: CoroutineScope,
+    animatableX: Animatable<Float, AnimationVector1D>,
+    animatableY: Animatable<Float, AnimationVector1D>,
+    targetX: Float,
+    targetY: Float,
+    size: Size
+) {
+    val x = if (targetX > size.width) size.width else if (targetX < 0f) 0f else targetX
+
+    scope.launch {
+        animatableX.animateTo(
+            targetValue = x,
+            animationSpec = tween(durationMillis = 1000)
+        )
     }
 
+    println("xAnimation targetY: $targetY")
+    val y = if (targetY > size.height) size.height - 180f else if (targetY < 0f) 180f else targetY
+    println("xAnimation y: $y")
+
+    scope.launch {
+        animatableY.animateTo(
+            targetValue = y,
+            animationSpec = tween(durationMillis = 1000)
+        )
+    }
+}
+
+fun checkAttempts(
+    attempts: Int,
+    side: Side,
+    onAttemptChange: (Int) -> Unit,
+    onSideChange: (Side) -> Unit
+) {
+    println("checkAttempts att: $attempts")
+    if (attempts < 0) {
+        println("checkAttempts cr side $side")
+        if (side is Side.Bottom) {
+            onSideChange.invoke(Side.Top)
+        } else {
+            onSideChange.invoke(Side.Bottom)
+        }
+        onAttemptChange.invoke(3)
+    }
 }
 
 fun MainParts(drawScope: DrawScope) {
@@ -437,3 +443,55 @@ fun drawGoal(
 fun SoccerScreenPreview() {
     SoccerScreen()
 }
+
+/*
+ val onClick: () -> Unit = {
+        animationScope.launch {
+            // Start the animations without blocking each other
+            // On each click x and y values will be created randomly
+            start = false
+            animationState = if (animatableY.value.toInt() == 0 || animatableY.value.toInt() == maxY) {
+                AnimationState.ENABLE
+            } else {
+                AnimationState.RUNNING
+            }
+
+            if (animationState == AnimationState.ENABLE) {
+                animationState = AnimationState.RUNNING
+                 launch {
+                    animatableX.animateTo(
+                        targetValue = (0..maxX)
+                            .random()
+                            .toFloat(),
+                        animationSpec = tween(durationMillis = 1000)
+                    )
+
+                    if (animatableX.value in xStart..xEnd) {
+                        goal++
+                        println("goal = $goal")
+                    }
+                }
+
+                launch {
+                    var randomY = 0f
+
+                    when(side) {
+                        Side.Bottom -> {
+                            randomY = 0f
+                            side = Side.Top
+                        }
+                        Side.Top -> {
+                            randomY = maxY.toFloat()
+                            side = Side.Bottom
+                        }
+                    }
+
+                    animatableY.animateTo(
+                        targetValue = randomY,
+                        animationSpec = tween(durationMillis = 1000)
+                    )
+                }
+            }
+        }
+    }
+ */
