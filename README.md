@@ -14,6 +14,6 @@ Goal by Goal game using Canvas with Jetpack Compose
 The main motivation to make this project was to learn in practice a bit more about jetpack compose to in a short future use it on my own projects.
 
 
-## :camera_flash: Screenshots Screenshot_1628788558.png
+## :camera_flash: Screenshots 
 <!-- You can add more screenshots here if you like -->
-<img src="/screenshots/Screenshot_1628788558.png" width="260">&emsp;<img src="/results/Screenshot_1628793429.png" width="260">
+<img src="/screenshots/Screenshot_1628788558.png" width="260">&emsp;<img src="/screenshots/Screenshot_1628793429.png" width="260">
