@@ -18,7 +18,7 @@ The main motivation to make this project was to learn in practice a bit more abo
 <!-- You can add more screenshots here if you like -->
 <img src="/screenshots/Screenshot_1628788558.png" width="260">&emsp;<img src="/screenshots/Screenshot_1628793429.png" width="260">
 
- ## LICENSE
+ ## License
 
 ```
 The MIT License (MIT)
