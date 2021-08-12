@@ -2,6 +2,10 @@ package com.ifucolo.goalbygoal.ui.theme
 
 import androidx.compose.ui.geometry.Size
 
+sealed class Side(var ySide: Float) {
+    object Top: Side(1f)
+    object Bottom: Side(-1f)
+}
 
 class FieldArea(
     val smallArea: SmallArea,
