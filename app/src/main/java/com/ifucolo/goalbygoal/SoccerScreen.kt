@@ -31,6 +31,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
+const val NUMBER_ATTEMPTS = 3
+const val DISTANCE_FROM_BORDER_TO_FIRST_LINE = 180f
+const val GOAL_SPACE_LINE = 20f
+const val LEFT_X = -300
+const val RIGHT_X = 300
 
 @Composable
 fun SoccerScreen() {
@@ -39,7 +44,7 @@ fun SoccerScreen() {
     val animationScope = rememberCoroutineScope()
 
     var side: Side by remember { mutableStateOf(Side.Bottom) }
-    var attempts: Int by remember { mutableStateOf(3) }
+    var attempts: Int by remember { mutableStateOf(NUMBER_ATTEMPTS) }
 
     var scoreTop: Int by remember { mutableStateOf(0) }
     var scoreBottom: Int by remember { mutableStateOf(0) }
@@ -48,20 +53,22 @@ fun SoccerScreen() {
     val onClickArrow: (Int) -> Unit = { x ->
         val targetX = animateX.value + x
         val targetY = animateY.value + (side.ySide * (sizeCanva!!.height/4))
+
         xAnimation(
-            animationScope,
-            animateX,
-            animateY,
-            targetX,
-            targetY,
-            sizeCanva!!
+            scope = animationScope,
+            animatableX = animateX,
+            animatableY = animateY,
+            targetX = targetX,
+            targetY = targetY,
+            size = sizeCanva!!
         )
+
         attempts -=1
         checkAttemptsAndGoal(
-            attempts,
-            side,
-            sizeCanva!!,
-            targetX,
+            attempts = attempts,
+            side = side,
+            size = sizeCanva!!,
+            animatableX = targetX,
             onAttemptChange = { attempts = it },
             onSideChange = { side = it},
             onScoreBottom = { scoreBottom++ },
@@ -81,20 +88,12 @@ fun SoccerScreen() {
                 .background(Color.Green)
                 //.clickable { onClick.invoke() },
         ) {
-            TopArea(drawScope = this)
-            BottomArea(drawScope = this)
-            MainParts(drawScope = this)
-
             sizeCanva = size
 
-            drawCircle(
-                color = Color.Black,
-                radius = 30f,
-                style = Stroke(35f),
-                center = Offset(
-                    x = animateX.value,
-                    y = animateY.value
-                )
+            drawField(
+                drawScope = this,
+                animateX = animateX,
+                animateY = animateY
             )
         }
 
@@ -106,10 +105,13 @@ fun SoccerScreen() {
                 this.start.linkTo(parent.start)
             },
             backgroundColor = Color.Black,
-            onClick = { onClickArrow(-300) },
+            onClick = { onClickArrow(LEFT_X) },
             contentColor = Color.White
         ) {
-            Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = "asdas")
+            Icon(
+                imageVector = Icons.Outlined.ArrowBack,
+                contentDescription = "ArrowBack"
+            )
         }
 
         FloatingActionButton(
@@ -118,10 +120,13 @@ fun SoccerScreen() {
                 end.linkTo(parent.end)
             },
             backgroundColor = Color.Black,
-            onClick = { onClickArrow(300) },
+            onClick = { onClickArrow(RIGHT_X) },
             contentColor = Color.White
         ) {
-            Icon(imageVector = Icons.Outlined.ArrowForward, contentDescription = "asdas")
+            Icon(
+                imageVector = Icons.Outlined.ArrowForward,
+                contentDescription = "ArrowForward"
+            )
         }
 
         Card(
@@ -129,7 +134,7 @@ fun SoccerScreen() {
         ) {
             Text(
                 modifier = Modifier.padding(8.dp),
-                text = "$scoreTop\nx\n$scoreBottom",
+                text = "$scoreTop X $scoreBottom",
                 style = TextStyle(
                     color = Color.Black,
                     fontWeight = FontWeight(800),
@@ -148,7 +153,11 @@ fun xAnimation(
     targetY: Float,
     size: Size
 ) {
-    val x = if (targetX > size.width) size.width else if (targetX < 0f) 0f else targetX
+    val x = when {
+        targetX > size.width -> size.width
+        targetX < 0f -> 0f
+        else -> targetX
+    }
 
     scope.launch {
         animatableX.animateTo(
@@ -157,9 +166,11 @@ fun xAnimation(
         )
     }
 
-    println("SoccerScreen xAnimation targetY: $targetY")
-    val y = if (targetY > size.height) size.height - 180f else if (targetY < 0f) 180f else targetY
-    println("SoccerScreen xAnimation y: $y")
+    val y = when {
+        targetY > size.height -> size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE
+        targetY < 0f -> DISTANCE_FROM_BORDER_TO_FIRST_LINE
+        else ->targetY
+    }
 
     scope.launch {
         animatableY.animateTo(
@@ -180,9 +191,7 @@ fun checkAttemptsAndGoal(
     onScoreTop: () -> Unit,
     onScoreBottom: () -> Unit,
 ) {
-    println("SoccerScreen checkAttempts att: $attempts")
     if (attempts < 0) {
-        println("SoccerScreen checkAttempts cr side $side")
         if (side is Side.Bottom) {
             checkIfGoal(animatableX, size, onScore = {
                 onScoreBottom.invoke()
@@ -208,11 +217,29 @@ fun checkIfGoal(
     val xStart = size.width/3
     val xEnd = size.width - size.width/3
 
-    println("SoccerScreen checkIfGoal check")
     if (xPos in xStart..xEnd) {
-        println("SoccerScreen checkIfGoal yes")
         onScore.invoke()
     }
+}
+
+fun drawField(
+    drawScope: DrawScope,
+    animateX: Animatable<Float, AnimationVector1D>,
+    animateY: Animatable<Float, AnimationVector1D>,
+) = drawScope.apply {
+    TopArea(drawScope = this)
+    BottomArea(drawScope = this)
+    MainParts(drawScope = this)
+
+    drawCircle(
+        color = Color.Black,
+        radius = 30f,
+        style = Stroke(35f),
+        center = Offset(
+            x = animateX.value,
+            y = animateY.value
+        )
+    )
 }
 
 fun MainParts(drawScope: DrawScope) {
@@ -220,15 +247,15 @@ fun MainParts(drawScope: DrawScope) {
 
         drawLine(
             color = Color.White,
-            start = Offset(x = 0f , y = 180f),
-            end = Offset(x = 0f , y = size.height - 180f ),
+            start = Offset(x = 0f , y = DISTANCE_FROM_BORDER_TO_FIRST_LINE),
+            end = Offset(x = 0f , y = size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE),
             strokeWidth = 12.dp.toPx()
         )
 
         drawLine(
             color = Color.White,
-            start = Offset(x = size.width , y = 180f),
-            end = Offset(x = size.width, y = size.height - 180f ),
+            start = Offset(x = size.width , y = DISTANCE_FROM_BORDER_TO_FIRST_LINE),
+            end = Offset(x = size.width, y = size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE),
             strokeWidth = 12.dp.toPx()
         )
         //Middle line
@@ -263,7 +290,7 @@ fun TopArea(drawScope: DrawScope) {
         val smallArea = SmallArea(
             xStart = size.width/3,
             xEnd = size.width - size.width/3,
-            yStart = 180f,
+            yStart = DISTANCE_FROM_BORDER_TO_FIRST_LINE,
             yEnd = size.height/7,
             yHorizontal = size.height/7
         )
@@ -271,17 +298,17 @@ fun TopArea(drawScope: DrawScope) {
         val bigArea = BigArea(
             xStart = size.width/6,
             xEnd = size.width - size.width/6,
-            yStart = 180f,
+            yStart = DISTANCE_FROM_BORDER_TO_FIRST_LINE,
             yEnd = size.height/5,
             yHorizontal = size.height/5,
-            yFieldLine = 180f
+            yFieldLine = DISTANCE_FROM_BORDER_TO_FIRST_LINE
         )
 
         val goal = Goal(
             xStart = size.width/3,
             xEnd = size.width - size.width/3,
             yStart = 0f,
-            yEnd = 180f
+            yEnd = DISTANCE_FROM_BORDER_TO_FIRST_LINE
         )
 
         val penaltyMark = PenaltyMark(
@@ -310,7 +337,7 @@ fun BottomArea(drawScope: DrawScope) {
             xStart = size.width/3,
             xEnd = size.width - size.width/3,
             yStart = size.height - size.height/7,
-            yEnd = size.height -180f,
+            yEnd = size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE,
             yHorizontal = size.height- size.height/7
         )
 
@@ -318,15 +345,15 @@ fun BottomArea(drawScope: DrawScope) {
             xStart = size.width/6,
             xEnd = size.width - size.width/6,
             yStart = size.height- size.height/5,
-            yEnd = size.height - 180f,
+            yEnd = size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE,
             yHorizontal = size.height- size.height/5,
-            yFieldLine = size.height - 180f
+            yFieldLine = size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE
         )
 
         val goal = Goal(
             xStart = size.width/3,
             xEnd = size.width - size.width/3,
-            yStart = size.height - 180f,
+            yStart = size.height - DISTANCE_FROM_BORDER_TO_FIRST_LINE,
             yEnd = size.height,
         )
 
@@ -454,7 +481,7 @@ fun drawGoal(
             strokeWidth = 2.dp.toPx()
         )
 
-        yStartPosToDraw+= 20f
+        yStartPosToDraw+= GOAL_SPACE_LINE
     }
 
     var xLimitLine = goal.xStart
@@ -468,7 +495,7 @@ fun drawGoal(
             strokeWidth = 2.dp.toPx()
         )
 
-        xLimitLine+= 20f
+        xLimitLine+= GOAL_SPACE_LINE
     }
 }
 
