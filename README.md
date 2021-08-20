@@ -17,7 +17,6 @@ The main motivation to make this project was to learn in practice a bit more abo
 ## :camera_flash: Screenshots 
 <!-- You can add more screenshots here if you like -->
 
-## Top
 ## Top Small Area
 <img src="/screenshots/Top Small Area Left vertical line.png" width="360">&emsp;<img src="/screenshots/Top Small Area Right top line.png" width="360">&emsp;<img src="/screenshots/Top Small Area Horizontal vertical line.png" width="360">
 
