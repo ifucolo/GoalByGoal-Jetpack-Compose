@@ -16,9 +16,28 @@ The main motivation to make this project was to learn in practice a bit more abo
 
 ## :camera_flash: Screenshots 
 <!-- You can add more screenshots here if you like -->
-<img src="/screenshots/Screenshot_1628788558.png" width="260">&emsp;<img src="/screenshots/Screenshot_1628793429.png" width="260">
 
- ## License
+## Top
+## Top Small Area
+<img src="/screenshots/Top Small Area Left vertical line.png" width="360">&emsp;<img src="/screenshots/Top Small Area Right top line.png" width="360">&emsp;<img src="/screenshots/Top Small Area Horizontal vertical line.png" width="360">
+
+## Top Big Area
+<img src="/screenshots/Top Penalty mark.png" width="360">&emsp;<img src="/screenshots/Top Big Area Right top line.png" width="360">&emsp;<img src="/screenshots/Top Big Area Left vertical line.png" width="360">
+<img src="/screenshots/Top Big Area Horizontal vertical line.png" width="360">&emsp;<img src="/screenshots/Top Big Area Horizontal line.png" width="360">
+                                                                                                                                              
+
+## Bottom Small Area
+<img src="/screenshots/Bottom Small Area Right vertical line.png" width="360">&emsp;<img src="/screenshots/Bottom Small Area Right vertical line (1).png" width="360">&emsp;<img src="/screenshots/Bottom Small Area Left vertical line.png" width="360">
+## Bottom Big Area
+<img src="/screenshots/Bottom Penalty mark.png" width="360">&emsp;<img src="/screenshots/Bottom Big Area Right vertical line.png" width="360">&emsp;<img src="/screenshots/Bottom Big Area Left vertical line.png" width="360">
+<img src="/screenshots/Bottom Big Area Horizontal top line.png" width="360">&emsp;<img src="/screenshots/Bottom Big Area Horizontal line.png" width="360">
+
+## Middle Field
+<img src="/screenshots/Big Circle.png" width="360">&emsp;<img src="/screenshots/Small Circle.png" width="360">&emsp;<img src="/screenshots/Midle line.png" width="360">
+
+
+
+## License
 
 ```
 The MIT License (MIT)
