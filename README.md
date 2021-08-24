@@ -3,6 +3,7 @@
 <!--- You can find both of these in the url bar when you open your repository in github. -->
 ![Workflow result](https://github.com/ifucolo/GoalByGoal---Jetpack-Compose/workflows/Check/badge.svg)
 
+<img src="https://github.com/ifucolo/GoalByGoal-Jetpack-Compose/blob/main/video-gif.gif" width="300"/>
 
 ## :scroll: Description
 <!--- Describe your app in one or two sentences -->
