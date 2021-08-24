@@ -21,8 +21,7 @@ things are displayed.
 
 ### Example: Top Small Area
 <img src="/screenshots/Top Small Area Left vertical line.png" width="300">
-If you want to see more screenshots like this that explains tjhe positions of the lines you can go to:
-https://github.com/ifucolo/GoalByGoal-Jetpack-Compose/tree/main/screenshots 
+If you want to see more screenshots like this, that explains the positions of the lines in the field, you can go to:  https://github.com/ifucolo/GoalByGoal-Jetpack-Compose/tree/main/screenshots 
 
 
 ## License
