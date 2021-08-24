@@ -12,7 +12,7 @@ Goal by Goal game using Canvas with Jetpack Compose
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
 The main motivation to make this project was to learn in practice a bit more about jetpack compose with Canvas, because,
-I've never have a experience using Canvas before, and playing with with the power of @Preview from Compose was such a amazing way to code and see how
+I've never had an experience using Canvas before, and playing with the power of @Preview from Compose was such an amazing way to code and see how
 things are displayed.
 
 
