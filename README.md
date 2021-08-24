@@ -11,29 +11,18 @@ Goal by Goal game using Canvas with Jetpack Compose
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
-The main motivation to make this project was to learn in practice a bit more about jetpack compose to in a short future use it on my own projects.
+The main motivation to make this project was to learn in practice a bit more about jetpack compose with Canvas, because,
+I've never have a experience using Canvas before, and playing with with the power of @Preview from Compose was such a amazing way to code and see how
+things are displayed.
 
 
 ## :camera_flash: Screenshots 
 <!-- You can add more screenshots here if you like -->
 
-### Top Small Area
-<img src="/screenshots/Top Small Area Left vertical line.png" width="300">&emsp;<img src="/screenshots/Top Small Area Right top line.png" width="300">&emsp;<img src="/screenshots/Top Small Area Horizontal vertical line.png" width="300">
-
-### Top Big Area
-<img src="/screenshots/Top Penalty mark.png" width="300">&emsp;<img src="/screenshots/Top Big Area Right top line.png" width="300">&emsp;<img src="/screenshots/Top Big Area Left vertical line.png" width="300">
-<img src="/screenshots/Top Big Area Horizontal vertical line.png" width="300">&emsp;<img src="/screenshots/Top Big Area Horizontal line.png" width="300">
-                                                                                                                                              
-
-### Bottom Small Area
-<img src="/screenshots/Bottom Small Area Right vertical line.png" width="300">&emsp;<img src="/screenshots/Bottom Small Area Right vertical line (1).png" width="300">&emsp;<img src="/screenshots/Bottom Small Area Left vertical line.png" width="300">
-### Bottom Big Area
-<img src="/screenshots/Bottom Penalty mark.png" width="300">&emsp;<img src="/screenshots/Bottom Big Area Right vertical line.png" width="300">&emsp;<img src="/screenshots/Bottom Big Area Left vertical line.png" width="300">
-<img src="/screenshots/Bottom Big Area Horizontal top line.png" width="300">&emsp;<img src="/screenshots/Bottom Big Area Horizontal line.png" width="300">
-
-### Middle Field
-<img src="/screenshots/Big Circle.png" width="300">&emsp;<img src="/screenshots/Small Circle.png" width="300">&emsp;<img src="/screenshots/Midle line.png" width="300">
-
+### Example: Top Small Area
+<img src="/screenshots/Top Small Area Left vertical line.png" width="300">
+If you want to see more screenshots like this that explains tjhe positions of the lines you can go to:
+https://github.com/ifucolo/GoalByGoal-Jetpack-Compose/tree/main/screenshots 
 
 
 ## License
